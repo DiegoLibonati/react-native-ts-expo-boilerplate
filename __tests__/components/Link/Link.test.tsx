@@ -22,7 +22,7 @@ jest.mock("expo-router", (): { Link: jest.Mock } => ({
 
 const renderComponent = (props: Partial<LinkProps> = {}): RenderAPI => {
   const defaultProps: LinkProps = {
-    href: "/home",
+    href: "/",
     children: "Go to Home",
     ...props,
   };
