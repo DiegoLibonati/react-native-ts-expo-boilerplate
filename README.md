@@ -72,6 +72,7 @@ Install **Expo Go** on your device ([Android](https://play.google.com/store/apps
 "@eslint/js": "^9.0.0"
 "@testing-library/react-native": "^12.1.2"
 "@types/jest": "~29.5.14"
+"@types/node": "^22.0.0"
 "@types/react": "~19.1.10"
 "babel-plugin-module-resolver": "^5.0.2"
 "babel-preset-expo": "~54.0.1"
