@@ -5,14 +5,7 @@ import type { UserCardProps } from "@/types/props";
 
 import { theme } from "@/styles/theme";
 
-export function UserCard({
-  name,
-  username,
-  email,
-  phone,
-  website,
-  company,
-}: UserCardProps): JSX.Element {
+function UserCard({ name, username, email, phone, website, company }: UserCardProps): JSX.Element {
   return (
     <View style={styles.card}>
       <Text style={styles.name}>{name}</Text>
@@ -60,3 +53,5 @@ const styles = StyleSheet.create({
     fontWeight: theme.typography.weights.medium,
   },
 });
+
+export default UserCard;

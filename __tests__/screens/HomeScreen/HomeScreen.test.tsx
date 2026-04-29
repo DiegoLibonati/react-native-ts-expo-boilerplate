@@ -4,7 +4,7 @@ import { Text as MockText } from "react-native";
 import type { ReactNode } from "react";
 import type { RenderAPI } from "@testing-library/react-native";
 
-import { HomeScreen } from "@/screens/HomeScreen/HomeScreen";
+import HomeScreen from "@/screens/HomeScreen/HomeScreen";
 
 interface LinkMockProps {
   children: ReactNode;

@@ -2,10 +2,11 @@ import { View, Text, StyleSheet } from "react-native";
 
 import type { JSX } from "react";
 
-import { Link } from "@/components/Link/Link";
+import Link from "@/components/Link/Link";
+
 import { theme } from "@/styles/theme";
 
-export function AboutScreen(): JSX.Element {
+function AboutScreen(): JSX.Element {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>About Page</Text>
@@ -38,3 +39,5 @@ const styles = StyleSheet.create({
     gap: theme.spacing.sm,
   },
 });
+
+export default AboutScreen;

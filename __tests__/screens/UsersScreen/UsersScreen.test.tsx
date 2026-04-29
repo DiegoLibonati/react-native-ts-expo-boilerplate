@@ -4,7 +4,7 @@ import { Text as MockText } from "react-native";
 import type { ReactNode } from "react";
 import type { RenderAPI } from "@testing-library/react-native";
 
-import { UsersScreen } from "@/screens/UsersScreen/UsersScreen";
+import UsersScreen from "@/screens/UsersScreen/UsersScreen";
 
 import { mockUsers } from "@tests/__mocks__/users.mock";
 

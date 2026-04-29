@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 import type { RenderAPI } from "@testing-library/react-native";
 import type { LinkProps } from "@/types/props";
 
-import { Link } from "@/components/Link/Link";
+import Link from "@/components/Link/Link";
 
 interface LinkMockProps {
   children: ReactNode;

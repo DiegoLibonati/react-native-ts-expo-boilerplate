@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react-native";
 
 import type { RenderAPI } from "@testing-library/react-native";
 
-import { NotFoundScreen } from "@/screens/NotFoundScreen/NotFoundScreen";
+import NotFoundScreen from "@/screens/NotFoundScreen/NotFoundScreen";
 
 const renderScreen = (): RenderAPI => render(<NotFoundScreen />);
 

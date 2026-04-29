@@ -2,12 +2,14 @@ import { View, Text, StyleSheet } from "react-native";
 
 import type { JSX } from "react";
 
-import { Action } from "@/components/Action/Action";
-import { Link } from "@/components/Link/Link";
+import Action from "@/components/Action/Action";
+import Link from "@/components/Link/Link";
+
 import { useCounterContext } from "@/hooks/useCounterContext";
+
 import { theme } from "@/styles/theme";
 
-export function ContextScreen(): JSX.Element {
+function ContextScreen(): JSX.Element {
   const { counterState, addCounter, subtractCounter } = useCounterContext();
 
   return (
@@ -81,3 +83,5 @@ const styles = StyleSheet.create({
     gap: theme.spacing.sm,
   },
 });
+
+export default ContextScreen;

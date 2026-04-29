@@ -1,6 +1,6 @@
 import type { JSX } from "react";
 
-import { ContextScreen } from "@/screens/ContextScreen/ContextScreen";
+import ContextScreen from "@/screens/ContextScreen/ContextScreen";
 
 import { CounterProvider } from "@/contexts/CounterContext/CounterProvider";
 

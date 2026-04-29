@@ -6,7 +6,7 @@ import { useLocalSearchParams } from "expo-router";
 import type { ReactNode } from "react";
 import type { RenderAPI } from "@testing-library/react-native";
 
-import { ProductScreen } from "@/screens/ProductScreen/ProductScreen";
+import ProductScreen from "@/screens/ProductScreen/ProductScreen";
 
 interface LinkMockProps {
   children: ReactNode;

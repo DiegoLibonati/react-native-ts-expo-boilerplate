@@ -5,12 +5,7 @@ import type { ActionProps } from "@/types/props";
 
 import { theme } from "@/styles/theme";
 
-export function Action({
-  onPress,
-  children,
-  accessibilityLabel,
-  testID,
-}: ActionProps): JSX.Element {
+function Action({ onPress, children, accessibilityLabel, testID }: ActionProps): JSX.Element {
   return (
     <TouchableOpacity
       style={styles.button}
@@ -38,3 +33,5 @@ const styles = StyleSheet.create({
     fontWeight: theme.typography.weights.semibold,
   },
 });
+
+export default Action;

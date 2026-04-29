@@ -3,11 +3,12 @@ import { useLocalSearchParams } from "expo-router";
 
 import type { JSX } from "react";
 
-import { Action } from "@/components/Action/Action";
-import { Link } from "@/components/Link/Link";
+import Action from "@/components/Action/Action";
+import Link from "@/components/Link/Link";
+
 import { theme } from "@/styles/theme";
 
-export function ProductScreen(): JSX.Element {
+function ProductScreen(): JSX.Element {
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const showProductId = (): void => {
@@ -58,3 +59,5 @@ const styles = StyleSheet.create({
     gap: theme.spacing.sm,
   },
 });
+
+export default ProductScreen;

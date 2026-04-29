@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react-native";
 import type { RenderAPI } from "@testing-library/react-native";
 import type { UserCardProps } from "@/types/props";
 
-import { UserCard } from "@/components/UserCard/UserCard";
+import UserCard from "@/components/UserCard/UserCard";
 
 const defaultCompany = { name: "Acme Corp", catchPhrase: "Making things", bs: "synergize" };
 

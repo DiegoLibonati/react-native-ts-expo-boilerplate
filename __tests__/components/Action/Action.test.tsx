@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react-native";
 import type { RenderAPI } from "@testing-library/react-native";
 import type { ActionProps } from "@/types/props";
 
-import { Action } from "@/components/Action/Action";
+import Action from "@/components/Action/Action";
 
 const mockOnPress = jest.fn();
 

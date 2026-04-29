@@ -2,10 +2,11 @@ import { View, Text, StyleSheet } from "react-native";
 
 import type { JSX } from "react";
 
-import { Link } from "@/components/Link/Link";
+import Link from "@/components/Link/Link";
+
 import { theme } from "@/styles/theme";
 
-export function HomeScreen(): JSX.Element {
+function HomeScreen(): JSX.Element {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Home Page</Text>
@@ -44,3 +45,5 @@ const styles = StyleSheet.create({
     gap: theme.spacing.sm,
   },
 });
+
+export default HomeScreen;

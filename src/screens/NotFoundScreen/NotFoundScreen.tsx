@@ -4,7 +4,7 @@ import type { JSX } from "react";
 
 import { theme } from "@/styles/theme";
 
-export function NotFoundScreen(): JSX.Element {
+function NotFoundScreen(): JSX.Element {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Page Not Found</Text>
@@ -36,3 +36,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
+
+export default NotFoundScreen;

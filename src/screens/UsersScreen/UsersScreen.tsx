@@ -4,12 +4,14 @@ import { View, Text, FlatList, StyleSheet } from "react-native";
 import type { JSX } from "react";
 import type { User } from "@/types/app";
 
-import { Link } from "@/components/Link/Link";
-import { UserCard } from "@/components/UserCard/UserCard";
+import Link from "@/components/Link/Link";
+import UserCard from "@/components/UserCard/UserCard";
+
 import userService from "@/services/userService";
+
 import { theme } from "@/styles/theme";
 
-export function UsersScreen(): JSX.Element {
+function UsersScreen(): JSX.Element {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -102,3 +104,5 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing.md,
   },
 });
+
+export default UsersScreen;

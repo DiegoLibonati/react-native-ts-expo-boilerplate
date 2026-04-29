@@ -6,7 +6,7 @@ import type { LinkProps } from "@/types/props";
 
 import { theme } from "@/styles/theme";
 
-export function Link({ href, children, accessibilityLabel, testID }: LinkProps): JSX.Element {
+function Link({ href, children, accessibilityLabel, testID }: LinkProps): JSX.Element {
   return (
     <ExpoLink
       href={href}
@@ -26,3 +26,5 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing.sm,
   },
 });
+
+export default Link;

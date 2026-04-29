@@ -2,7 +2,7 @@ import { Redirect } from "expo-router";
 
 import type { JSX } from "react";
 
-import { NotFoundScreen } from "@/screens/NotFoundScreen/NotFoundScreen";
+import NotFoundScreen from "@/screens/NotFoundScreen/NotFoundScreen";
 
 import envs from "@/constants/envs";
 
