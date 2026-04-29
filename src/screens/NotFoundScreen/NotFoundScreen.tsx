@@ -21,18 +21,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: theme.spacing.lg,
-    backgroundColor: theme.colors.light.background.screen,
+    backgroundColor: theme.colors.light.primary,
   },
   title: {
     fontSize: theme.typography.sizes.xxl,
     fontWeight: theme.typography.weights.bold,
-    color: theme.colors.light.text.primary,
+    color: theme.colors.light.tertiary,
     marginBottom: theme.spacing.md,
     textAlign: "center",
   },
   description: {
     fontSize: theme.typography.sizes.md,
-    color: theme.colors.light.text.secondary,
+    color: theme.colors.light.quaternary,
     textAlign: "center",
   },
 });

@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    color: theme.colors.light.text.inverse,
+    color: theme.colors.light.quaternary,
     fontSize: theme.typography.sizes.md,
     fontWeight: theme.typography.weights.semibold,
   },

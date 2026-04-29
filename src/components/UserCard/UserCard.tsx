@@ -20,11 +20,11 @@ function UserCard({ name, username, email, phone, website, company }: UserCardPr
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: theme.colors.light.background.card,
+    backgroundColor: theme.colors.white,
     borderRadius: theme.radius.md,
     padding: theme.spacing.md,
     marginBottom: theme.spacing.sm + 4,
-    shadowColor: theme.colors.light.text.primary,
+    shadowColor: theme.colors.black,
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: theme.radius.sm,
@@ -34,16 +34,16 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.sizes.lg,
     fontWeight: theme.typography.weights.bold,
     marginBottom: theme.spacing.xs,
-    color: theme.colors.light.text.primary,
+    color: theme.colors.light.tertiary,
   },
   username: {
     fontSize: theme.typography.sizes.sm,
-    color: theme.colors.light.text.secondary,
+    color: theme.colors.light.quaternary,
     marginBottom: theme.spacing.sm,
   },
   info: {
     fontSize: theme.typography.sizes.sm,
-    color: theme.colors.light.text.primary,
+    color: theme.colors.light.tertiary,
     marginBottom: 2,
   },
   company: {

@@ -57,12 +57,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: theme.spacing.lg,
-    backgroundColor: theme.colors.light.background.screen,
+    backgroundColor: theme.colors.light.primary,
   },
   title: {
     fontSize: theme.typography.sizes.xxl,
     fontWeight: theme.typography.weights.bold,
-    color: theme.colors.light.text.primary,
+    color: theme.colors.light.tertiary,
     marginBottom: theme.spacing.lg,
   },
   counter: {
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   counterValue: {
     fontSize: theme.typography.sizes.xxxl,
     fontWeight: theme.typography.weights.bold,
-    color: theme.colors.light.text.primary,
+    color: theme.colors.light.tertiary,
     minWidth: 60,
     textAlign: "center",
   },

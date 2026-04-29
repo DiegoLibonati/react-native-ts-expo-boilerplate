@@ -1,26 +1,17 @@
 export const palette = {
-  blue50: "#EFF6FF",
-  blue100: "#DBEAFE",
-  blue400: "#60A5FA",
-  blue500: "#3B82F6",
-  blue600: "#2563EB",
-  blue700: "#1D4ED8",
-
-  gray50: "#F9FAFB",
-  gray100: "#F3F4F6",
-  gray200: "#E5E7EB",
-  gray400: "#9CA3AF",
-  gray500: "#6B7280",
-  gray700: "#374151",
-  gray800: "#1F2937",
-  gray900: "#111827",
-  gray950: "#030712",
-
-  green500: "#22C55E",
-  red500: "#EF4444",
-  amber500: "#F59E0B",
-
+  light: {
+    primary: "#EDE9E6",
+    secondary: "#C9996B",
+    tertiary: "#5C4F4A",
+    quaternary: "#5C766D",
+  },
+  dark: {
+    primary: "#2F2FE4",
+    secondary: "#162E93",
+    tertiary: "#1A1953",
+    quaternary: "#080616",
+  },
   white: "#FFFFFF",
   black: "#000000",
-  transparent: "transparent",
+  error: "#E53E3E",
 };
