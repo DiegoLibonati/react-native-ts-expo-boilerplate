@@ -1,7 +1,8 @@
 import type { JSX } from "react";
 
-import { CounterProvider } from "@/contexts/CounterContext/CounterProvider";
 import { ContextScreen } from "@/screens/ContextScreen/ContextScreen";
+
+import { CounterProvider } from "@/contexts/CounterContext/CounterProvider";
 
 export default function ContextRoute(): JSX.Element {
   return (

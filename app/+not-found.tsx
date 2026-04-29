@@ -6,7 +6,7 @@ import { NotFoundScreen } from "@/screens/NotFoundScreen/NotFoundScreen";
 
 import envs from "@/constants/envs";
 
-export default function NotFound(): JSX.Element {
+export default function NotFoundRoute(): JSX.Element {
   if (envs.redirectIfRouteNotExists) {
     return <Redirect href="/" />;
   }
