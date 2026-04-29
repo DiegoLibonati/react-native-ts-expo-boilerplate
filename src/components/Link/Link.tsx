@@ -21,7 +21,7 @@ function Link({ href, children, accessibilityLabel, testID }: LinkProps): JSX.El
 
 const styles = StyleSheet.create({
   link: {
-    color: theme.colors.text.link,
+    color: theme.colors.light.text.link,
     fontSize: theme.typography.sizes.md,
     paddingVertical: theme.spacing.sm,
   },

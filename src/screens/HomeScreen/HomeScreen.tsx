@@ -33,12 +33,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: theme.spacing.lg,
-    backgroundColor: theme.colors.background.screen,
+    backgroundColor: theme.colors.light.background.screen,
   },
   title: {
     fontSize: theme.typography.sizes.xxl,
     fontWeight: theme.typography.weights.bold,
-    color: theme.colors.text.primary,
+    color: theme.colors.light.text.primary,
     marginBottom: theme.spacing.lg,
   },
   links: {

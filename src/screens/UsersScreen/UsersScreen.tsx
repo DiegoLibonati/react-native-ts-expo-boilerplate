@@ -80,23 +80,23 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: theme.spacing.lg,
-    backgroundColor: theme.colors.background.screen,
+    backgroundColor: theme.colors.light.background.screen,
   },
   title: {
     fontSize: theme.typography.sizes.xxl,
     fontWeight: theme.typography.weights.bold,
-    color: theme.colors.text.primary,
+    color: theme.colors.light.text.primary,
     marginBottom: theme.spacing.lg,
   },
   loading: {
     fontSize: theme.typography.sizes.md,
-    color: theme.colors.text.secondary,
+    color: theme.colors.light.text.secondary,
     textAlign: "center",
     marginTop: theme.spacing.lg,
   },
   error: {
     fontSize: theme.typography.sizes.md,
-    color: theme.colors.status.error,
+    color: theme.colors.light.status.error,
     textAlign: "center",
     marginTop: theme.spacing.lg,
   },

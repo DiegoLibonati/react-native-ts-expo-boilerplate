@@ -21,14 +21,14 @@ function Action({ onPress, children, accessibilityLabel, testID }: ActionProps):
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: theme.colors.primary,
+    backgroundColor: theme.colors.light.primary,
     paddingHorizontal: theme.spacing.md,
     paddingVertical: theme.spacing.sm + 2,
     borderRadius: theme.radius.md,
     alignItems: "center",
   },
   text: {
-    color: theme.colors.text.inverse,
+    color: theme.colors.light.text.inverse,
     fontSize: theme.typography.sizes.md,
     fontWeight: theme.typography.weights.semibold,
   },
