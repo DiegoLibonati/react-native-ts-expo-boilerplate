@@ -129,6 +129,99 @@ For coverage report:
 npm run test:coverage
 ```
 
+## Production (Mobile)
+
+This boilerplate ships with an `eas.json` configured for **Expo Application Services (EAS) Build**, the official Expo cloud build service for producing native iOS and Android binaries without requiring a local Mac or Xcode.
+
+### Prerequisites
+
+1. Install EAS CLI globally:
+   ```bash
+   npm install -g eas-cli
+   ```
+2. Create a free account at [expo.dev](https://expo.dev) and log in:
+   ```bash
+   eas login
+   ```
+3. In `app.json`, set a unique `bundleIdentifier` (iOS) and `package` (Android) for your app:
+   ```json
+   {
+     "expo": {
+       "ios": {
+         "bundleIdentifier": "com.yourcompany.yourapp",
+         "supportsTablet": true
+       },
+       "android": {
+         "package": "com.yourcompany.yourapp",
+         "adaptiveIcon": { "...": "..." }
+       }
+     }
+   }
+   ```
+4. Link your local project to EAS (run once per project):
+   ```bash
+   eas build:configure
+   ```
+
+### Build Profiles
+
+| Profile       | Purpose                                     | Distribution                 |
+| ------------- | ------------------------------------------- | ---------------------------- |
+| `development` | Development build with `expo-dev-client`    | Internal (device / emulator) |
+| `preview`     | Functional build for QA and manual testing  | Internal (APK / Ad Hoc IPA)  |
+| `production`  | Store-ready binary, auto-increments version | App Store / Play Store       |
+
+### Build Commands
+
+```bash
+# Android APK for internal testing
+eas build --profile preview --platform android
+
+# iOS build for internal testing
+eas build --profile preview --platform ios
+
+# Production build for both platforms
+eas build --profile production --platform all
+```
+
+### Submit to Stores
+
+Once a production build is ready:
+
+```bash
+# Submit to Google Play Store
+eas submit --profile production --platform android
+
+# Submit to Apple App Store
+eas submit --profile production --platform ios
+```
+
+For Android, you need a [Google Play service account JSON key](https://github.com/expo/fyi/blob/main/creating-google-service-account.md) — set its path in `eas.json` under `submit.production.android.serviceAccountKeyPath`. For iOS, EAS authenticates with your Apple Developer account interactively on first submit.
+
+### Environment Variables in EAS Builds
+
+Variables defined in `.env` are **not** automatically available during EAS cloud builds. Register them via the EAS dashboard or CLI:
+
+```bash
+eas env:create --scope project --name EXPO_PUBLIC_TEMPLATE_API_URL --value https://api.yourapp.com
+eas env:create --scope project --name EXPO_PUBLIC_REDIRECT_IF_ROUTE_NOT_EXISTS --value false
+```
+
+Non-sensitive values can alternatively be inlined directly in `eas.json` under each build profile using the `env` key:
+
+```json
+{
+  "build": {
+    "production": {
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_REDIRECT_IF_ROUTE_NOT_EXISTS": "false"
+      }
+    }
+  }
+}
+```
+
 ## Env Keys
 
 | Key                                        | Description                                                                        |
