@@ -1,26 +1,23 @@
 import type { User } from "@/types/app";
+import type { ResponseDirect } from "@/types/responses";
 
 import envs from "@/constants/envs";
 
 const userService = {
-  getAll: async (): Promise<User[]> => {
+  getAll: async (): Promise<ResponseDirect<User[]>> => {
     const response = await fetch(`${envs.templateApiUrl}/users`);
 
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-    const users: User[] = (await response.json()) as User[];
-
-    return users;
+    return (await response.json()) as ResponseDirect<User[]>;
   },
 
-  getById: async (id: number): Promise<User> => {
+  getById: async (id: number): Promise<ResponseDirect<User>> => {
     const response = await fetch(`${envs.templateApiUrl}/users/${id}`);
 
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-    const user: User = (await response.json()) as User;
-
-    return user;
+    return (await response.json()) as ResponseDirect<User>;
   },
 };
 
