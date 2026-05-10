@@ -6,16 +6,6 @@ This project was created primarily for **educational and learning purposes**.
 While it is well-structured and could technically be used in production, it is **not intended for commercialization**.  
 The main goal is to explore and demonstrate best practices, patterns, and technologies in software development.
 
-## Getting Started
-
-1. Clone the repository
-2. Navigate to the project folder
-3. Copy the environment file: `cp .env.example .env` and fill in the values
-4. Execute: `npm install`
-5. Execute: `npm start`
-
-Install **Expo Go** on your device ([Android](https://play.google.com/store/apps/details?id=host.exp.exponent) / [iOS](https://apps.apple.com/app/expo-go/id982107779)) and scan the QR code that appears in the terminal.
-
 ## Description
 
 **React Native Ts Expo Boilerplate** is a production-ready starting point for building cross-platform mobile applications with React Native, TypeScript, and Expo. It is not a UI kit or a framework — it is the foundation you clone once and stop rebuilding from scratch on every new project.
@@ -37,9 +27,9 @@ Install **Expo Go** on your device ([Android](https://play.google.com/store/apps
 
 **How to use it:**
 
-1. Clone the repository and install dependencies.
+1. Clone the repository and install dependencies (see [Getting Started](#getting-started)).
 2. Rename the project in `package.json`, `app.json` (`name`, `slug`, `scheme`).
-3. Set your environment variables following `.env.example`.
+3. Set your environment variables following [`.env.example`](#env-keys).
 4. Replace the template screens, components, services, and contexts in `src/` with your own domain logic — the folder structure, routing setup, type conventions, and tooling stay exactly as they are.
 
 ## Technologies Used
@@ -91,7 +81,19 @@ Install **Expo Go** on your device ([Android](https://play.google.com/store/apps
 "typescript-eslint": "^8.0.0"
 ```
 
-## Available Scripts
+## Getting Started
+
+With the stack and dependencies clear, these are the steps to get the app running locally.
+
+1. Clone the repository.
+2. Navigate to the project folder.
+3. Copy the environment file: `cp .env.example .env` and fill in the values — see [Env Keys](#env-keys) for what each variable does.
+4. Install dependencies: `npm install` (this also wires up the Husky pre-commit hook automatically).
+5. Start the Expo dev server: `npm run start`.
+
+Install **Expo Go** on your device ([Android](https://play.google.com/store/apps/details?id=host.exp.exponent) / [iOS](https://apps.apple.com/app/expo-go/id982107779)) and scan the QR code that appears in the terminal.
+
+### Other dev commands
 
 | Command                      | Description                          |
 | ---------------------------- | ------------------------------------ |
@@ -102,127 +104,40 @@ Install **Expo Go** on your device ([Android](https://play.google.com/store/apps
 | `npm run ios`                | Open on iOS simulator/device         |
 | `npm run web`                | Open in browser                      |
 | `npm run prebuild`           | Generate native Android/iOS folders  |
-| `npm run test`               | Run tests                            |
-| `npm run test:watch`         | Run tests in watch mode              |
-| `npm run test:coverage`      | Run tests with coverage              |
-| `npm run lint`               | Check for linting errors             |
-| `npm run lint:fix`           | Fix linting errors                   |
-| `npm run lint:all`           | Fix linting errors (src + tests)     |
-| `npm run format`             | Format code with Prettier            |
-| `npm run format:check`       | Check code formatting                |
-| `npm run format:all`         | Format code (src + app + tests)      |
 | `npm run typecheck`          | Run TypeScript type checking         |
-| `npm run doctor`             | Run Expo Doctor health check         |
 
-## Portfolio Link
+### Pre-Commit for Development
 
-[`https://www.diegolibonati.com.ar/#/project/react-native-ts-expo-boilerplate`](https://www.diegolibonati.com.ar/#/project/react-native-ts-expo-boilerplate)
+The project enforces code quality through automatic pre-commit hooks. **Husky** runs **lint-staged** on every commit to lint and format only the staged files, blocking the commit if anything fails. The hook is wired automatically when you run `npm install` (via Husky's `prepare` script).
 
-## Testing
+**ESLint** — TypeScript-aware with `strictTypeChecked` and `stylisticTypeChecked` enabled:
 
-1. Navigate to the project folder
-2. Execute: `npm test`
+- Explicit return types required
+- No `any` type allowed
+- Consistent type imports
+- No unused variables
 
-For coverage report:
+**Prettier** — automatic code formatting:
 
-```bash
-npm run test:coverage
-```
+- 2 spaces indentation
+- Semicolons required
+- Double quotes
+- Trailing commas (ES5)
 
-## Production (Mobile)
+**lint-staged** is configured to run ESLint on staged `.ts` / `.tsx` files and Prettier on staged `.ts` / `.tsx` / `.json` / `.md` files.
 
-This boilerplate ships with an `eas.json` configured for **Expo Application Services (EAS) Build**, the official Expo cloud build service for producing native iOS and Android binaries without requiring a local Mac or Xcode.
-
-### Prerequisites
-
-1. Install EAS CLI globally:
-   ```bash
-   npm install -g eas-cli
-   ```
-2. Create a free account at [expo.dev](https://expo.dev) and log in:
-   ```bash
-   eas login
-   ```
-3. In `app.json`, set a unique `bundleIdentifier` (iOS) and `package` (Android) for your app:
-   ```json
-   {
-     "expo": {
-       "ios": {
-         "bundleIdentifier": "com.yourcompany.yourapp",
-         "supportsTablet": true
-       },
-       "android": {
-         "package": "com.yourcompany.yourapp",
-         "adaptiveIcon": { "...": "..." }
-       }
-     }
-   }
-   ```
-4. Link your local project to EAS (run once per project):
-   ```bash
-   eas build:configure
-   ```
-
-### Build Profiles
-
-| Profile       | Purpose                                     | Distribution                 |
-| ------------- | ------------------------------------------- | ---------------------------- |
-| `development` | Development build with `expo-dev-client`    | Internal (device / emulator) |
-| `preview`     | Functional build for QA and manual testing  | Internal (APK / Ad Hoc IPA)  |
-| `production`  | Store-ready binary, auto-increments version | App Store / Play Store       |
-
-### Build Commands
-
-```bash
-# Android APK for internal testing
-eas build --profile preview --platform android
-
-# iOS build for internal testing
-eas build --profile preview --platform ios
-
-# Production build for both platforms
-eas build --profile production --platform all
-```
-
-### Submit to Stores
-
-Once a production build is ready:
-
-```bash
-# Submit to Google Play Store
-eas submit --profile production --platform android
-
-# Submit to Apple App Store
-eas submit --profile production --platform ios
-```
-
-For Android, you need a [Google Play service account JSON key](https://github.com/expo/fyi/blob/main/creating-google-service-account.md) — set its path in `eas.json` under `submit.production.android.serviceAccountKeyPath`. For iOS, EAS authenticates with your Apple Developer account interactively on first submit.
-
-### Environment Variables in EAS Builds
-
-Variables defined in `.env` are **not** automatically available during EAS cloud builds. Register them via the EAS dashboard or CLI:
-
-```bash
-eas env:create --scope project --name EXPO_PUBLIC_TEMPLATE_API_URL --value https://api.yourapp.com
-eas env:create --scope project --name EXPO_PUBLIC_REDIRECT_IF_ROUTE_NOT_EXISTS --value false
-```
-
-Non-sensitive values can alternatively be inlined directly in `eas.json` under each build profile using the `env` key:
-
-```json
-{
-  "build": {
-    "production": {
-      "autoIncrement": true,
-      "env": {
-        "EXPO_PUBLIC_REDIRECT_IF_ROUTE_NOT_EXISTS": "false"
-      }
-    }
-  }
-}
-```
+| Command                | Description                      |
+| ---------------------- | -------------------------------- |
+| `npm run lint`         | Check for linting errors         |
+| `npm run lint:fix`     | Fix linting errors               |
+| `npm run lint:all`     | Fix linting errors (src + tests) |
+| `npm run format`       | Format code with Prettier        |
+| `npm run format:check` | Check code formatting            |
+| `npm run format:all`   | Format code (src + app + tests)  |
 
 ## Env Keys
+
+The app reads environment variables from `.env`, copied from `.env.example` during setup. All variables are parsed and typed once in `src/constants/envs.ts`, so the rest of the codebase never touches `process.env` directly.
 
 | Key                                        | Description                                                                        |
 | ------------------------------------------ | ---------------------------------------------------------------------------------- |
@@ -233,6 +148,8 @@ Non-sensitive values can alternatively be inlined directly in `eas.json` under e
 EXPO_PUBLIC_REDIRECT_IF_ROUTE_NOT_EXISTS=false
 EXPO_PUBLIC_TEMPLATE_API_URL=https://jsonplaceholder.typicode.com
 ```
+
+> Note: variables defined in `.env` are **not** automatically picked up by EAS cloud builds — they only apply locally. See [Environment Variables in EAS Builds](#environment-variables-in-eas-builds) for how to register them for production.
 
 ## Project Structure
 
@@ -315,6 +232,8 @@ react-native-ts-expo-boilerplate/
 
 ## Architecture & Design Patterns
 
+The folder structure above is the skeleton — these are the design decisions that hold it together.
+
 ### Routing Layer vs. Logic Layer separation
 
 The `app/` directory is intentionally thin. Every file in it does one thing: export a screen component (or a screen wrapped in its scoped provider). All business logic, state, and UI lives in `src/`. This separation means the routing layer can be restructured without touching any screen logic, and every screen in `src/` can be tested in isolation without a router.
@@ -354,43 +273,34 @@ Raw `process.env` access is confined to a single file (`src/constants/envs.ts`).
 
 The tsconfig enables `strict`, `exactOptionalPropertyTypes`, `noUncheckedIndexedAccess`, `noImplicitReturns`, and `noImplicitOverride`. These are not style preferences — they are compile-time guarantees. Explicit return types on all functions, type-only imports, and no `any` are enforced by ESLint rules on top of the compiler. Errors surface at development time, not at runtime on a device.
 
-## Code Quality Tools
+## Testing
 
-### ESLint
+The project uses **Jest 29** + **@testing-library/react-native**, configured with the `jest-expo` preset, `transformIgnorePatterns` adjusted for React Native's `node_modules`, path aliases working in tests, and a coverage threshold enforced at 70% across branches, functions, lines, and statements.
 
-Configured with TypeScript strict rules:
+1. Navigate to the project folder.
+2. Run the test suite with the command that fits your workflow:
 
-- Explicit return types required
-- No `any` type allowed
-- Consistent type imports
-- No unused variables
+| Command                 | Description                    |
+| ----------------------- | ------------------------------ |
+| `npm run test`          | Run tests once                 |
+| `npm run test:watch`    | Run tests in watch mode        |
+| `npm run test:coverage` | Run tests with coverage report |
 
-### Prettier
+A coverage report under 70% will fail the run, so it doubles as a regression gate before shipping a build.
 
-Automatic code formatting:
+## Security Audit
 
-- 2 spaces indentation
-- Semicolons required
-- Double quotes
-- Trailing commas (ES5)
-
-### Husky + lint-staged
-
-Pre-commit hooks that automatically:
-
-- Run ESLint on staged `.ts` and `.tsx` files
-- Format `.ts`, `.tsx`, `.json` and `.md` files with Prettier
-- Block commits with linting errors
-
-## Security
+Before producing a release build, audit dependencies and the project configuration.
 
 ### npm audit
 
-Check for vulnerabilities in dependencies:
+Check for known vulnerabilities in dependencies:
 
 ```bash
 npm audit
 ```
+
+See [Known Issues](#known-issues) for the current state of `npm audit` on this project — some warnings are expected and explained there.
 
 ### Expo Doctor
 
@@ -399,6 +309,107 @@ Run a full health check on the project (dependency versions, SDK compatibility, 
 ```bash
 npm run doctor
 ```
+
+A clean `expo-doctor` run is the signal that the dependency tree is aligned with the installed SDK and safe to build.
+
+## Build
+
+Once tests pass and the audit is clean, the next step is producing a native binary. This boilerplate ships with an `eas.json` configured for **Expo Application Services (EAS) Build**, the official Expo cloud build service for producing native iOS and Android binaries without requiring a local Mac or Xcode.
+
+### Prerequisites
+
+1. Install EAS CLI globally:
+   ```bash
+   npm install -g eas-cli
+   ```
+2. Create a free account at [expo.dev](https://expo.dev) and log in:
+   ```bash
+   eas login
+   ```
+3. In `app.json`, set a unique `bundleIdentifier` (iOS) and `package` (Android) for your app:
+   ```json
+   {
+     "expo": {
+       "ios": {
+         "bundleIdentifier": "com.yourcompany.yourapp",
+         "supportsTablet": true
+       },
+       "android": {
+         "package": "com.yourcompany.yourapp",
+         "adaptiveIcon": { "...": "..." }
+       }
+     }
+   }
+   ```
+4. Link your local project to EAS (run once per project):
+   ```bash
+   eas build:configure
+   ```
+
+### Build Profiles
+
+| Profile       | Purpose                                     | Distribution                 |
+| ------------- | ------------------------------------------- | ---------------------------- |
+| `development` | Development build with `expo-dev-client`    | Internal (device / emulator) |
+| `preview`     | Functional build for QA and manual testing  | Internal (APK / Ad Hoc IPA)  |
+| `production`  | Store-ready binary, auto-increments version | App Store / Play Store       |
+
+### Build Commands
+
+```bash
+# Android APK for internal testing
+eas build --profile preview --platform android
+
+# iOS build for internal testing
+eas build --profile preview --platform ios
+
+# Production build for both platforms
+eas build --profile production --platform all
+```
+
+### Environment Variables in EAS Builds
+
+Variables defined locally in `.env` (see [Env Keys](#env-keys)) are **not** automatically available during EAS cloud builds. Register them via the EAS dashboard or CLI:
+
+```bash
+eas env:create --scope project --name EXPO_PUBLIC_TEMPLATE_API_URL --value https://api.yourapp.com
+eas env:create --scope project --name EXPO_PUBLIC_REDIRECT_IF_ROUTE_NOT_EXISTS --value false
+```
+
+Non-sensitive values can alternatively be inlined directly in `eas.json` under each build profile using the `env` key:
+
+```json
+{
+  "build": {
+    "production": {
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_REDIRECT_IF_ROUTE_NOT_EXISTS": "false"
+      }
+    }
+  }
+}
+```
+
+## Production
+
+Final checklist for shipping to the stores. Each step assumes the previous sections are already done — this is just the order to execute them in.
+
+1. **Tests pass** — see [Testing](#testing). Run `npm run test:coverage` and verify the 70% threshold is met.
+2. **Audit clean** — see [Security Audit](#security-audit). Run `npm audit` and `npm run doctor`. Acknowledge any open items in [Known Issues](#known-issues).
+3. **Production env vars registered in EAS** — see [Environment Variables in EAS Builds](#environment-variables-in-eas-builds). Make sure `EXPO_PUBLIC_TEMPLATE_API_URL` and `EXPO_PUBLIC_REDIRECT_IF_ROUTE_NOT_EXISTS` point to your real production backend, not the local `.env` defaults.
+4. **Production build** — see [Build Commands](#build-commands). Run `eas build --profile production --platform all`.
+5. **Submit to stores**:
+
+   ```bash
+   # Submit to Google Play Store
+   eas submit --profile production --platform android
+
+   # Submit to Apple App Store
+   eas submit --profile production --platform ios
+   ```
+
+   For Android, you need a [Google Play service account JSON key](https://github.com/expo/fyi/blob/main/creating-google-service-account.md) — set its path in `eas.json` under `submit.production.android.serviceAccountKeyPath`. For iOS, EAS authenticates with your Apple Developer account interactively on first submit.
 
 ## Known Issues
 
@@ -409,3 +420,7 @@ Running `npm audit` reports vulnerabilities in `@tootallnate/once`, `postcss`, a
 The suggested fix (`npm audit fix --force`) would downgrade `expo` to v49 and `jest-expo` to v47, both of which are incompatible with the current SDK. Do not run it.
 
 This is a known limitation of the Expo ecosystem tracked upstream. The vulnerabilities will be resolved when Expo updates its internal dependencies. No action is required on the project side.
+
+## Portfolio Link
+
+[`https://www.diegolibonati.com.ar/#/project/react-native-ts-expo-boilerplate`](https://www.diegolibonati.com.ar/#/project/react-native-ts-expo-boilerplate)
