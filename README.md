@@ -52,9 +52,11 @@ The main goal is to explore and demonstrate best practices, patterns, and techno
 "expo-router": "~6.0.23"
 "expo-status-bar": "~3.0.9"
 "react": "19.1.0"
+"react-dom": "19.1.0"
 "react-native": "0.81.5"
 "react-native-safe-area-context": "~5.6.0"
 "react-native-screens": "~4.16.0"
+"react-native-web": "^0.21.0"
 ```
 
 ### DevDependencies
