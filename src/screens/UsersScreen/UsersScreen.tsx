@@ -7,6 +7,8 @@ import type { User } from "@/types/app";
 import Link from "@/components/Link/Link";
 import UserCard from "@/components/UserCard/UserCard";
 
+import ApiError from "@/core/ApiError";
+
 import userService from "@/services/userService";
 
 import { theme } from "@/styles/theme";
@@ -14,15 +16,20 @@ import { theme } from "@/styles/theme";
 function UsersScreen(): JSX.Element {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const loadUsers = async (): Promise<void> => {
     try {
       setLoading(true);
+      setErrorMessage(null);
       const data = await userService.getAll();
       setUsers(data);
-    } catch {
-      setError(true);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setErrorMessage(`Error loading users (status ${String(err.status)}). Please try again.`);
+      } else {
+        setErrorMessage("Error loading users. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -42,13 +49,13 @@ function UsersScreen(): JSX.Element {
         </Text>
       )}
 
-      {error && (
+      {errorMessage !== null && (
         <Text style={styles.error} accessibilityLiveRegion="assertive">
-          Error loading users. Please try again.
+          {errorMessage}
         </Text>
       )}
 
-      {!loading && !error && (
+      {!loading && errorMessage === null && (
         <FlatList
           data={users}
           keyExtractor={(user) => String(user.id)}

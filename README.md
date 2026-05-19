@@ -21,7 +21,9 @@ The main goal is to explore and demonstrate best practices, patterns, and techno
 - **Service layer** — plain async modules that wrap `fetch`, throw typed errors on non-ok responses, and keep all API communication out of components. Base URL driven by an environment variable.
 - **Centralized type system** — all TypeScript interfaces live in `src/types/`, split by concern (props, app models, hooks, env variables). Environment variables are parsed and typed once in `src/constants/envs.ts`; raw `process.env` access does not spread across the codebase.
 - **Theme system** — a two-layer style architecture: `src/styles/colors.ts` holds the raw color palette, `src/styles/theme.ts` exposes semantic tokens (`theme.colors.primary`, `theme.spacing.lg`, `theme.typography.sizes.xxl`, `theme.radius.md`). Changing the primary color of the entire app means editing one value.
-- **Jest 29 + Testing Library** — configured with `jest-expo` preset, `transformIgnorePatterns` set up correctly for React Native's node_modules, path aliases working in tests, and coverage threshold enforced at 70% across branches, functions, lines, and statements.
+- **Jest 29 + Testing Library + MSW** — configured with `jest-expo` preset, `transformIgnorePatterns` set up correctly for React Native's node_modules, path aliases working in tests, MSW v2 (with `undici` polyfills) for HTTP mocking instead of stubbing `global.fetch`, and coverage threshold enforced at 70% across branches, functions, lines, and statements.
+- **Typed API errors** — a single `ApiError` class in `src/core/` carries `status` and `url` alongside the message, so services throw structured errors and consumers can branch on HTTP status without parsing strings.
+- **Root error boundary** — `expo-router` is wired to a reusable `ErrorBoundary` component that captures uncaught render errors and exposes a retry action.
 - **ESLint + Prettier + Husky + lint-staged** — pre-commit hooks block commits with linting errors and auto-format staged files. TypeScript-aware ESLint rules with `strictTypeChecked` and `stylisticTypeChecked` enabled.
 - **`expo-doctor` passing 17/17 checks** — dependency tree is clean and aligned with the installed SDK.
 
@@ -75,10 +77,12 @@ The main goal is to explore and demonstrate best practices, patterns, and techno
 "jest": "~29.7.0"
 "jest-expo": "~54.0.0"
 "lint-staged": "^15.0.0"
+"msw": "2.10.4"
 "prettier": "^3.0.0"
 "react-test-renderer": "19.1.0"
 "typescript": "^5.2.2"
 "typescript-eslint": "^8.0.0"
+"undici": "^7.25.0"
 ```
 
 ## Getting Started
@@ -156,12 +160,15 @@ EXPO_PUBLIC_TEMPLATE_API_URL=https://jsonplaceholder.typicode.com
 ```
 react-native-ts-expo-boilerplate/
 ├── __tests__/                      # Test suite
-│   ├── __mocks__/                  # Shared mock data and module mocks
+│   ├── __mocks__/                  # Shared mock data + MSW server and handlers
 │   ├── components/                 # Tests for reusable components
-│   ├── constants/                  # Tests for constants
+│   ├── core/                       # Tests for core primitives (ApiError, ...)
+│   ├── helpers/                    # Tests for pure helper functions
 │   ├── screens/                    # Tests for screen components
 │   ├── services/                   # Tests for service modules
-│   └── jest.setup.ts               # Jest global setup
+│   ├── jest.polyfills.ts           # Node web API polyfills (loaded before MSW)
+│   ├── jest.polyfills-undici.ts    # fetch/Request/Response via undici
+│   └── jest.setup.ts               # Jest global setup (MSW lifecycle)
 ├── app/                            # expo-router file-based routes
 │   ├── _layout.tsx                 # Root layout (StatusBar, global providers)
 │   ├── +not-found.tsx              # 404 / redirect handler
@@ -179,12 +186,17 @@ react-native-ts-expo-boilerplate/
 ├── src/
 │   ├── components/                 # Reusable UI components
 │   │   ├── Action/                 # Pressable button component
+│   │   ├── ErrorBoundary/          # Fallback UI for uncaught render errors
 │   │   ├── Link/                   # expo-router Link wrapper component
 │   │   └── UserCard/               # User profile card component
 │   ├── constants/                  # App-wide constant values
 │   │   └── envs.ts                 # Environment variable constants
 │   ├── contexts/                   # React context definitions and providers
 │   │   └── CounterContext/         # Counter state context
+│   ├── core/                       # Cross-cutting primitives shared by services and screens
+│   │   └── ApiError.ts             # Typed HTTP error (status + url)
+│   ├── helpers/                    # Pure helper functions
+│   │   └── getInitials.ts          # Extract initials from a full name
 │   ├── hooks/                      # Custom React hooks
 │   │   └── useCounterContext.ts    # Hook to consume CounterContext
 │   ├── screens/                    # Screen components (imported by app/ routes)
@@ -200,10 +212,13 @@ react-native-ts-expo-boilerplate/
 │   │   ├── colors.ts               # Raw color palette
 │   │   └── theme.ts                # Semantic design tokens
 │   └── types/                      # TypeScript type definitions
-│       ├── app.ts                  # Domain model types
+│       ├── app.ts                  # Domain model types (User, Company, ...)
+│       ├── contexts.ts             # React context value shapes
 │       ├── envs.ts                 # Env variable types
 │       ├── hooks.ts                # Hook return types
-│       └── props.ts                # Component prop types
+│       ├── props.ts                # Component prop types
+│       ├── responses.ts            # HTTP response envelope types
+│       └── states.ts               # Reducer / state shape types
 ├── .env.example                    # Example environment variables
 ├── app.json                        # Expo app configuration
 ├── babel.config.js                 # Babel configuration
@@ -215,20 +230,22 @@ react-native-ts-expo-boilerplate/
 └── tsconfig.test.json              # TypeScript config for tests
 ```
 
-| Folder / File        | Description                                                         |
-| -------------------- | ------------------------------------------------------------------- |
-| `app/`               | expo-router file-based routes — thin layer, imports from `src/`     |
-| `app/_layout.tsx`    | Root layout wrapping all routes (StatusBar, global providers)       |
-| `app/+not-found.tsx` | Catches unmatched routes — redirects or shows 404 based on env var  |
-| `assets/`            | Static assets referenced in `app.json` (icon, splash, fonts)        |
-| `src/components/`    | Presentational components reused across screens                     |
-| `src/constants/`     | Centralized constants — env vars parsed and typed once              |
-| `src/contexts/`      | React Context definitions and their Provider components             |
-| `src/hooks/`         | Custom hooks that encapsulate context consumption or reusable logic |
-| `src/screens/`       | One folder per screen; each contains a `.tsx` with its StyleSheet   |
-| `src/services/`      | `fetch`-based API modules, one per resource                         |
-| `src/styles/`        | Two-layer theme system: raw color palette + semantic tokens         |
-| `src/types/`         | TypeScript interfaces and types, split by concern                   |
+| Folder / File        | Description                                                          |
+| -------------------- | -------------------------------------------------------------------- |
+| `app/`               | expo-router file-based routes — thin layer, imports from `src/`      |
+| `app/_layout.tsx`    | Root layout wrapping all routes (StatusBar, global providers)        |
+| `app/+not-found.tsx` | Catches unmatched routes — redirects or shows 404 based on env var   |
+| `assets/`            | Static assets referenced in `app.json` (icon, splash, fonts)         |
+| `src/components/`    | Presentational components reused across screens                      |
+| `src/constants/`     | Centralized constants — env vars parsed and typed once               |
+| `src/contexts/`      | React Context definitions and their Provider components              |
+| `src/core/`          | Cross-cutting primitives shared by services and screens (`ApiError`) |
+| `src/helpers/`       | Pure helper functions with no React/RN dependencies                  |
+| `src/hooks/`         | Custom hooks that encapsulate context consumption or reusable logic  |
+| `src/screens/`       | One folder per screen; each contains a `.tsx` with its StyleSheet    |
+| `src/services/`      | `fetch`-based API modules, one per resource                          |
+| `src/styles/`        | Two-layer theme system: raw color palette + semantic tokens          |
+| `src/types/`         | TypeScript interfaces and types, split by concern                    |
 
 ## Architecture & Design Patterns
 
@@ -275,7 +292,7 @@ The tsconfig enables `strict`, `exactOptionalPropertyTypes`, `noUncheckedIndexed
 
 ## Testing
 
-The project uses **Jest 29** + **@testing-library/react-native**, configured with the `jest-expo` preset, `transformIgnorePatterns` adjusted for React Native's `node_modules`, path aliases working in tests, and a coverage threshold enforced at 70% across branches, functions, lines, and statements.
+The project uses **Jest 29** + **@testing-library/react-native** + **MSW v2** for HTTP mocking, configured with the `jest-expo` preset, `transformIgnorePatterns` adjusted for React Native's `node_modules`, path aliases working in tests, `undici`-based polyfills loaded via `setupFiles` so MSW's Node interceptor runs under `jest-expo`, and a coverage threshold enforced at 70% across branches, functions, lines, and statements. Service and screen tests intercept network calls through a shared MSW server (`__tests__/__mocks__/mswServer.mock.ts`) — `global.fetch` is never stubbed.
 
 1. Navigate to the project folder.
 2. Run the test suite with the command that fits your workflow:
@@ -389,6 +406,80 @@ Non-sensitive values can alternatively be inlined directly in `eas.json` under e
     }
   }
 }
+```
+
+## Continuous Integration
+
+The repository ships with a **GitHub Actions** pipeline defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml). It runs automatically on every `push` and `pull_request` targeting the `main` branch, validating that the project still lints, type-checks, formats, tests, bundles, and passes `expo-doctor` before any change is merged.
+
+The pipeline does **not** produce store binaries — those are produced on demand via EAS (see [Build](#build)). CI is strictly a validation gate for the source.
+
+### Pipeline overview
+
+```
+        ┌─── PR or push to main ───┐
+                     │
+                     ▼
+        ┌──────────────────────┐
+        │    lint-and-audit    │
+        │ eslint · tsc · format│
+        └──────────┬───────────┘
+                   ▼
+        ┌──────────────────────┐
+        │       testing        │
+        │  jest (jest-expo)    │
+        └──────────┬───────────┘
+                   ▼
+        ┌──────────────────────┐
+        │        bundle        │
+        │  expo export (all)   │
+        └──────────┬───────────┘
+                   ▼
+        ┌──────────────────────┐
+        │      expo-doctor     │
+        │ dependency health    │
+        └──────────────────────┘
+```
+
+### Validation jobs (run on every PR and push to `main`)
+
+1. **`lint-and-audit`** — installs dependencies with `npm ci`, then runs `npm run lint` (ESLint over `src/`, `app/`, `__tests__/`), `npm run typecheck` (TypeScript strict project), and `npm run format:check` (Prettier).
+2. **`testing`** — runs the full Jest suite (`npm run test`) under the `jest-expo` preset, including MSW-backed service and screen tests. Needs `lint-and-audit` to succeed.
+3. **`bundle`** — runs `npx expo export --platform all` to verify the JS bundle still builds for iOS, Android and Web. The exported `dist/` directory is uploaded as the `expo-dist` workflow artifact (7-day retention) so reviewers can download it from the Actions tab. Needs `testing`.
+4. **`expo-doctor`** — runs `npm run doctor` to confirm the Expo dependency tree is still aligned with the installed SDK. Needs `bundle`.
+
+The jobs run sequentially via `needs:`, so a failure in any earlier job short-circuits the rest of the pipeline.
+
+### Node version
+
+All jobs read the Node version from [`.nvmrc`](.nvmrc) (`22`) through `actions/setup-node`'s `node-version-file` input, so the local toolchain and CI stay in sync. Bumping Node is a one-file change. The repo also enforces `engine-strict=true` via [`.npmrc`](.npmrc), so an unsupported Node version fails `npm ci` locally as well.
+
+### Where the build outputs live
+
+| Output                                          | Location                                                     |
+| ----------------------------------------------- | ------------------------------------------------------------ |
+| Validation logs (lint, typecheck, format, test) | **Actions** tab on GitHub                                    |
+| Expo bundle (`dist/`)                           | Workflow artifact `expo-dist` (Actions tab, 7-day retention) |
+| Store binaries (`.apk` / `.aab` / `.ipa`)       | Produced separately via EAS — see [Build](#build)            |
+
+> **Note:** This pipeline does not bump versions, tag releases, or attach store binaries to GitHub Releases. Production builds go through EAS on demand, and the version bump in `app.json` is controlled by the `autoIncrement` flag in each EAS build profile.
+
+### Running the same checks locally
+
+```bash
+# lint-and-audit
+npm run lint
+npm run typecheck
+npm run format:check
+
+# testing
+npm run test
+
+# bundle
+npx expo export --platform all
+
+# expo-doctor
+npm run doctor
 ```
 
 ## Production

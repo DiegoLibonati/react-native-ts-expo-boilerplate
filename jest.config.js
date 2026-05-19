@@ -2,11 +2,17 @@
 const config = {
   preset: "jest-expo",
   roots: ["<rootDir>/src", "<rootDir>/__tests__"],
+  setupFiles: [
+    "<rootDir>/__tests__/jest.polyfills.ts",
+    "<rootDir>/__tests__/jest.polyfills-undici.ts",
+  ],
   setupFilesAfterEnv: ["<rootDir>/__tests__/jest.setup.ts"],
   testMatch: ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"],
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
     "^@tests/(.*)$": "<rootDir>/__tests__/$1",
+    "^msw/node$": "<rootDir>/node_modules/msw/lib/node/index.js",
+    "^msw$": "<rootDir>/node_modules/msw/lib/core/index.js",
   },
   transformIgnorePatterns: [
     "node_modules/(?!((jest-)?react-native|@react-native(-community)?|expo(-[^/]*)?|@expo(-[^/]*)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|react-native-svg|native-base))",

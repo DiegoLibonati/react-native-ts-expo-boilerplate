@@ -1,5 +1,11 @@
+import { http, HttpResponse } from "msw";
+
 import userService from "@/services/userService";
 
+import ApiError from "@/core/ApiError";
+
+import { MOCK_API_BASE_URL } from "@tests/__mocks__/mswHandlers.mock";
+import { mockMswServer } from "@tests/__mocks__/mswServer.mock";
 import { mockUser, mockUsers } from "@tests/__mocks__/users.mock";
 
 jest.mock("@/constants/envs", () => ({
@@ -10,56 +16,51 @@ jest.mock("@/constants/envs", () => ({
   },
 }));
 
-const mockFetchSuccess = (data: unknown): void => {
-  global.fetch = jest.fn().mockResolvedValue({
-    ok: true,
-    json: (): Promise<unknown> => Promise.resolve(data),
-  });
-};
-
-const mockFetchError = (status: number): void => {
-  global.fetch = jest.fn().mockResolvedValue({
-    ok: false,
-    status,
-  });
-};
-
-const mockFetchNetworkError = (message = "Network error"): void => {
-  global.fetch = jest.fn().mockRejectedValue(new Error(message));
-};
-
 describe("userService", () => {
   describe("getAll", () => {
     describe("when fetch succeeds", () => {
       it("should return an array of users", async () => {
-        mockFetchSuccess(mockUsers);
         const result = await userService.getAll();
-        expect(result).toEqual(mockUsers);
-      });
 
-      it("should call fetch with the correct endpoint", async () => {
-        mockFetchSuccess(mockUsers);
-        await userService.getAll();
-        expect(global.fetch).toHaveBeenCalledWith("https://test.api.com/users");
+        expect(result).toEqual(mockUsers);
       });
     });
 
     describe("when the server returns an error", () => {
-      it("should throw an error with the HTTP status", async () => {
-        mockFetchError(500);
+      it("should throw ApiError with status 500", async () => {
+        mockMswServer.use(
+          http.get(`${MOCK_API_BASE_URL}/users`, () => new HttpResponse(null, { status: 500 }))
+        );
+
+        await expect(userService.getAll()).rejects.toThrow(ApiError);
         await expect(userService.getAll()).rejects.toThrow("HTTP error! status: 500");
       });
 
-      it("should throw an error with 404 status", async () => {
-        mockFetchError(404);
+      it("should throw ApiError with status 404", async () => {
+        mockMswServer.use(
+          http.get(`${MOCK_API_BASE_URL}/users`, () => new HttpResponse(null, { status: 404 }))
+        );
+
         await expect(userService.getAll()).rejects.toThrow("HTTP error! status: 404");
+      });
+
+      it("should include the requested url on the thrown ApiError", async () => {
+        mockMswServer.use(
+          http.get(`${MOCK_API_BASE_URL}/users`, () => new HttpResponse(null, { status: 500 }))
+        );
+
+        await expect(userService.getAll()).rejects.toMatchObject({
+          status: 500,
+          url: `${MOCK_API_BASE_URL}/users`,
+        });
       });
     });
 
     describe("when there is a network error", () => {
       it("should propagate the network error", async () => {
-        mockFetchNetworkError("Failed to fetch");
-        await expect(userService.getAll()).rejects.toThrow("Failed to fetch");
+        mockMswServer.use(http.get(`${MOCK_API_BASE_URL}/users`, () => HttpResponse.error()));
+
+        await expect(userService.getAll()).rejects.toThrow();
       });
     });
   });
@@ -67,34 +68,47 @@ describe("userService", () => {
   describe("getById", () => {
     describe("when fetch succeeds", () => {
       it("should return the user with the given id", async () => {
-        mockFetchSuccess(mockUser);
         const result = await userService.getById(1);
+
         expect(result).toEqual(mockUser);
       });
 
-      it("should call fetch with the correct endpoint including the id", async () => {
-        mockFetchSuccess(mockUser);
-        await userService.getById(42);
-        expect(global.fetch).toHaveBeenCalledWith("https://test.api.com/users/42");
+      it("should request the endpoint that includes the id", async () => {
+        mockMswServer.use(
+          http.get(`${MOCK_API_BASE_URL}/users/:id`, ({ params }) =>
+            HttpResponse.json({ requested: params.id })
+          )
+        );
+
+        const result = (await userService.getById(42)) as unknown as { requested: string };
+
+        expect(result.requested).toBe("42");
       });
     });
 
     describe("when the server returns an error", () => {
-      it("should throw an error with the HTTP status", async () => {
-        mockFetchError(404);
+      it("should throw ApiError with status 404", async () => {
+        mockMswServer.use(
+          http.get(`${MOCK_API_BASE_URL}/users/:id`, () => new HttpResponse(null, { status: 404 }))
+        );
+
         await expect(userService.getById(999)).rejects.toThrow("HTTP error! status: 404");
       });
 
-      it("should throw an error with 500 status", async () => {
-        mockFetchError(500);
+      it("should throw ApiError with status 500", async () => {
+        mockMswServer.use(
+          http.get(`${MOCK_API_BASE_URL}/users/:id`, () => new HttpResponse(null, { status: 500 }))
+        );
+
         await expect(userService.getById(1)).rejects.toThrow("HTTP error! status: 500");
       });
     });
 
     describe("when there is a network error", () => {
       it("should propagate the network error", async () => {
-        mockFetchNetworkError();
-        await expect(userService.getById(1)).rejects.toThrow("Network error");
+        mockMswServer.use(http.get(`${MOCK_API_BASE_URL}/users/:id`, () => HttpResponse.error()));
+
+        await expect(userService.getById(1)).rejects.toThrow();
       });
     });
   });

@@ -30,3 +30,8 @@ export interface UserCardProps extends DefaultProps {
 export interface CounterProviderProps {
   children: React.ReactNode;
 }
+
+export interface ErrorBoundaryProps {
+  error: Error;
+  retry: () => void;
+}
