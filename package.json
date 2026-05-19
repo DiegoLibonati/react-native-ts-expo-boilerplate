@@ -28,6 +28,9 @@
     "doctor": "expo doctor",
     "prepare": "husky"
   },
+  "overrides": {
+    "react-dom": "19.1.0"
+  },
   "dependencies": {
     "expo": "~54.0.0",
     "expo-constants": "~18.0.13",
