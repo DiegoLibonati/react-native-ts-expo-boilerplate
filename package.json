@@ -25,7 +25,7 @@
     "test:watch": "jest --watchAll --verbose",
     "test:coverage": "jest --coverage",
     "typecheck": "tsc -p tsconfig.app.json --noEmit",
-    "doctor": "expo doctor",
+    "doctor": "npx expo-doctor",
     "prepare": "husky"
   },
   "overrides": {
