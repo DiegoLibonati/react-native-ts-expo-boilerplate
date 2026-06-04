@@ -25,7 +25,7 @@ The main goal is to explore and demonstrate best practices, patterns, and techno
 - **Typed API errors** — a single `ApiError` class in `src/core/` carries `status` and `url` alongside the message, so services throw structured errors and consumers can branch on HTTP status without parsing strings.
 - **Root error boundary** — `expo-router` is wired to a reusable `ErrorBoundary` component that captures uncaught render errors and exposes a retry action.
 - **ESLint + Prettier + Husky + lint-staged** — pre-commit hooks block commits with linting errors and auto-format staged files. TypeScript-aware ESLint rules with `strictTypeChecked` and `stylisticTypeChecked` enabled.
-- **`expo-doctor` passing 17/17 checks** — dependency tree is clean and aligned with the installed SDK.
+- **CI-integrated `expo-doctor`** — a dedicated GitHub Actions job runs Expo's dependency-health check on every push and PR, wired as **advisory** (`continue-on-error`). `expo-doctor` validates packages against Expo's _remotely-recommended_ versions, which drift as Expo ships patches, so it informs without failing CI on changes you didn't make. The authoritative "does it build" gate is the `bundle` job's `expo export`.
 
 **How to use it:**
 
@@ -329,7 +329,7 @@ Run a full health check on the project (dependency versions, SDK compatibility, 
 npm run doctor
 ```
 
-A clean `expo-doctor` run is the signal that the dependency tree is aligned with the installed SDK and safe to build.
+A clean `expo-doctor` run signals the dependency tree is aligned with the installed SDK. Note that `expo-doctor` validates against Expo's _remotely-recommended_ package versions, which Expo bumps as it ships patches — so even a freshly cloned boilerplate can report patch-level drift through no fault of your code. Treat it as advisory; the authoritative "does it build" check is `npx expo export` (run by CI's `bundle` job). To realign your dependencies with the latest recommended versions, run `npx expo install --check`.
 
 ## Build
 
@@ -412,7 +412,7 @@ Non-sensitive values can alternatively be inlined directly in `eas.json` under e
 
 ## Continuous Integration
 
-The repository ships with a **GitHub Actions** pipeline defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml). It runs automatically on every `push` and `pull_request` targeting the `main` branch, validating that the project still lints, type-checks, formats, tests, bundles, and passes `expo-doctor` before any change is merged.
+The repository ships with a **GitHub Actions** pipeline defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml). It runs automatically on every `push` and `pull_request` targeting the `main` branch, validating that the project still lints, type-checks, formats, tests, and bundles before any change is merged. It also runs `expo-doctor` as an advisory, non-blocking dependency-health check.
 
 The pipeline does **not** produce store binaries — those are produced on demand via EAS (see [Build](#build)). CI is strictly a validation gate for the source.
 
@@ -441,6 +441,7 @@ The pipeline does **not** produce store binaries — those are produced on deman
         │      expo-doctor     │
         │ dependency health    │
         └──────────────────────┘
+          advisory · non-blocking
 ```
 
 ### Validation jobs (run on every PR and push to `main`)
@@ -448,7 +449,7 @@ The pipeline does **not** produce store binaries — those are produced on deman
 1. **`lint-and-audit`** — installs dependencies with `npm ci`, then runs `npm run lint` (ESLint over `src/`, `app/`, `__tests__/`), `npm run typecheck` (TypeScript strict project), and `npm run format:check` (Prettier).
 2. **`testing`** — runs the full Jest suite (`npm run test`) under the `jest-expo` preset, including MSW-backed service and screen tests. Needs `lint-and-audit` to succeed.
 3. **`bundle`** — runs `npx expo export --platform all` to verify the JS bundle still builds for iOS, Android and Web. The exported `dist/` directory is uploaded as the `expo-dist` workflow artifact (7-day retention) so reviewers can download it from the Actions tab. Needs `testing`.
-4. **`expo-doctor`** — runs `npm run doctor` to confirm the Expo dependency tree is still aligned with the installed SDK. Needs `bundle`.
+4. **`expo-doctor`** — runs `npm run doctor` to report whether the Expo dependency tree is still aligned with the installed SDK. Needs `bundle`. This job is **advisory**: it's marked `continue-on-error: true`, so it still runs and surfaces its findings in the logs, but a failure does not fail the pipeline or block a merge. `expo-doctor` validates against Expo's remotely-recommended package versions — a moving target that can turn the job red without any code change — so it's treated as a signal, not a hard gate.
 
 The jobs run sequentially via `needs:`, so a failure in any earlier job short-circuits the rest of the pipeline.
 
