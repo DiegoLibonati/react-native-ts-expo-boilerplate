@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react-native";
 import { Text as MockText } from "react-native";
-import { http, HttpResponse, delay } from "msw";
+import { http, HttpResponse } from "msw";
 
 import type { ReactNode } from "react";
 import type { RenderAPI } from "@testing-library/react-native";
@@ -43,10 +43,7 @@ describe("UsersScreen", () => {
 
     it("should show the loading state while fetching", () => {
       mockMswServer.use(
-        http.get(`${MOCK_API_BASE_URL}/users`, async () => {
-          await delay("infinite");
-          return HttpResponse.json([]);
-        })
+        http.get(`${MOCK_API_BASE_URL}/users`, () => new Promise<never>(() => undefined))
       );
 
       renderScreen();
