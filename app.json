@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "React Native Ts Expo Boilerplate",
-    "slug": "react-native-ts-expo-boilerplate",
+    "name": "React Native Expo Boilerplate",
+    "slug": "react-native-expo-boilerplate",
     "version": "1.0.0",
-    "scheme": "react-native-ts-expo-boilerplate",
+    "scheme": "react-native-expo-boilerplate",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",

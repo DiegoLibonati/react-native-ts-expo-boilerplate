@@ -1,4 +1,4 @@
-# React Native Ts Expo Boilerplate
+# React Native Expo Boilerplate
 
 ## Educational Purpose
 
@@ -8,7 +8,7 @@ The main goal is to explore and demonstrate best practices, patterns, and techno
 
 ## Description
 
-**React Native Ts Expo Boilerplate** is a production-ready starting point for building cross-platform mobile applications with React Native, TypeScript, and Expo. It is not a UI kit or a framework — it is the foundation you clone once and stop rebuilding from scratch on every new project.
+**React Native Expo Boilerplate** is a production-ready starting point for building cross-platform mobile applications with React Native, TypeScript, and Expo. It is not a UI kit or a framework — it is the foundation you clone once and stop rebuilding from scratch on every new project.
 
 **The problem it solves:** every React Native + Expo + TypeScript project starts with the same repetitive decisions — how to structure folders, how to wire up file-based routing, where to put types, how to handle shared state without overengineering, how to manage environment variables safely, how to set up linting and formatting so they actually block bad code before it reaches the repo, and how to configure Jest so tests actually run in a React Native environment. This boilerplate answers all of those decisions upfront, with a consistent and lightweight architecture that scales to real applications without introducing unnecessary complexity.
 
@@ -160,7 +160,7 @@ EXPO_PUBLIC_TEMPLATE_API_URL=https://jsonplaceholder.typicode.com
 ## Project Structure
 
 ```
-react-native-ts-expo-boilerplate/
+react-native-expo-boilerplate/
 ├── __tests__/                      # Test suite
 │   ├── __mocks__/                  # Shared mock data + MSW server and handlers
 │   ├── components/                 # Tests for reusable components
@@ -509,4 +509,4 @@ This is a known limitation of the Expo ecosystem tracked upstream. The vulnerabi
 
 ## Portfolio Link
 
-[`https://www.diegolibonati.com.ar/#/project/react-native-ts-expo-boilerplate`](https://www.diegolibonati.com.ar/#/project/react-native-ts-expo-boilerplate)
+[`https://www.diegolibonati.com.ar/#/project/react-native-expo-boilerplate`](https://www.diegolibonati.com.ar/#/project/react-native-expo-boilerplate)
